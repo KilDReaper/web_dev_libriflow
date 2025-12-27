@@ -23,7 +23,7 @@ export default function LoginForm() {
         // GOTO
         setTransition( async () => {
             await new Promise((resolve) => setTimeout(resolve, 1000));
-            // router.push("/");
+            router.push("/");
         })
         console.log("login", values);
     };
