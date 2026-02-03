@@ -31,6 +31,7 @@ export default function RegisterPage() {
           phoneNumber,
           password,
           confirmPassword,
+          role, // ✅ SEND ROLE
         }
       );
 
@@ -42,37 +43,28 @@ export default function RegisterPage() {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="flex flex-col gap-4 max-w-sm mx-auto mt-10"
-    >
-      <h1 className="text-2xl font-bold">Sign Up</h1>
+    <form onSubmit={handleSubmit}>
+      <h2>Sign Up</h2>
 
       <input
-        type="text"
         placeholder="Username"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
         required
-        className="border p-2 rounded"
       />
 
       <input
-        type="email"
         placeholder="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         required
-        className="border p-2 rounded"
       />
 
       <input
-        type="text"
         placeholder="Phone Number"
         value={phoneNumber}
         onChange={(e) => setPhoneNumber(e.target.value)}
         required
-        className="border p-2 rounded"
       />
 
       <input
@@ -81,7 +73,6 @@ export default function RegisterPage() {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         required
-        className="border p-2 rounded"
       />
 
       <input
@@ -90,17 +81,15 @@ export default function RegisterPage() {
         value={confirmPassword}
         onChange={(e) => setConfirmPassword(e.target.value)}
         required
-        className="border p-2 rounded"
       />
+
       <input
         placeholder="Role (user or admin)"
         value={role}
         onChange={(e) => setRole(e.target.value)}
       />
 
-      <button type="submit" className="bg-green-500 text-white p-2 rounded">
-        Sign Up
-      </button>
+      <button type="submit">Sign Up</button>
     </form>
   );
 }
