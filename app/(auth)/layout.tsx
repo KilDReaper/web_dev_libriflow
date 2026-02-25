@@ -11,32 +11,23 @@ export default function Layout({
       <div className="h-full w-full grid md:grid-cols-2 md:gap-0">
 
         {/* LEFT - Illustration */}
-        <div className="relative hidden md:block h-full overflow-hidden">
-          <Image
-            src={Logo}
-            alt="Welcome illustration"
-            fill
-            priority
-            className="object-cover"
-          />
+        <div className="relative hidden md:flex items-center justify-center h-full bg-white">
+          <div className="w-52 h-52 flex items-center justify-center rounded-2xl shadow">
+            <Image
+              src={Logo}
+              alt="Welcome illustration"
+              fill
+              priority
+              className="rounded-2xl object-contain"
+              style={{ padding: "12px" }} 
+            />
+          </div>
         </div>
 
-        {/* RIGHT - Logo + Auth Form */}
+        {/* RIGHT - Auth Form */}
         <div className="flex h-full items-center justify-center px-4 md:px-10">
           <div className="w-full max-w-md rounded-xl border border-black/10 dark:border-white/10 bg-background/80 supports-[backdrop-filter]:backdrop-blur p-6 shadow-sm">
-
-            {/* LOGO */}
-            <div className="flex justify-center mb-6">
-              <Image
-                src={Logo}     
-                alt="Libriflow Logo"
-                width={120}
-                priority
-              />
-            </div>
-
             {children}
-
           </div>
         </div>
 
