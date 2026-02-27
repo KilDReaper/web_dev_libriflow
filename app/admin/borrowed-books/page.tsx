@@ -6,24 +6,25 @@ import Link from "next/link";
 
 interface BorrowedBook {
   _id: string;
-  bookId: {
+  book: {
     _id: string;
     title: string;
     author: string;
     isbn: string;
-    coverImage?: string;
+    coverImageUrl?: string;
   };
-  userId: {
+  user: {
     _id: string;
     username: string;
     email: string;
-    firstName?: string;
-    lastName?: string;
+    phoneNumber?: string;
   };
   borrowDate: string;
   dueDate: string;
-  returnDate?: string;
-  status: "borrowed" | "returned" | "overdue";
+  returnedDate?: string;
+  status: "active" | "returned" | "overdue" | "lost";
+  fineAmount?: number;
+  finePaid?: boolean;
 }
 
 interface BorrowingStats {
@@ -38,7 +39,7 @@ export default function AdminBorrowedBooksPage() {
   const [stats, setStats] = useState<BorrowingStats | null>(null);
   const [errorInfo, setErrorInfo] = useState<string>("");
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<"all" | "borrowed" | "returned" | "overdue">("all");
+  const [filter, setFilter] = useState<"all" | "active" | "returned" | "overdue" | "lost">("all");
 
   useEffect(() => {
     fetchData();
@@ -49,8 +50,8 @@ export default function AdminBorrowedBooksPage() {
       setLoading(true);
       const statusFilter = filter === "all" ? "" : `?status=${filter}`;
       const [borrowsRes, statsRes] = await Promise.all([
-        api.get(`/borrowed-books${statusFilter}`),
-        api.get("/borrowed-books/stats"),
+        api.get(`/borrowings${statusFilter}`),
+        api.get("/borrowings/stats"),
       ]);
 
       const borrowsData = borrowsRes.data?.data || borrowsRes.data;
@@ -59,8 +60,18 @@ export default function AdminBorrowedBooksPage() {
       if (Array.isArray(borrowsData)) {
         setBorrowedBooks(borrowsData);
       }
+      
+      // Transform backend stats format to match frontend expectations
       if (statsData) {
-        setStats(statsData);
+        const transformedStats: BorrowingStats = {
+          totalBorrows: Object.values(statsData.byStatus || {}).reduce(
+            (sum: number, status: any) => sum + (status.count || 0), 0
+          ),
+          activeBorrows: statsData?.byStatus?.active?.count || 0,
+          overdueBooks: statsData?.byStatus?.overdue?.count || 0,
+          returnedBooks: statsData?.byStatus?.returned?.count || 0,
+        };
+        setStats(transformedStats);
       }
     } catch (err: any) {
       setErrorInfo(err.response?.data?.message || "Failed to fetch borrowed books");
@@ -73,7 +84,7 @@ export default function AdminBorrowedBooksPage() {
     if (!confirm("Mark this book as returned?")) return;
 
     try {
-      await api.put(`/borrowed-books/return/${borrowId}`);
+      await api.post(`/borrowings/${borrowId}/return`);
       fetchData(); // Refresh data
     } catch (err: any) {
       alert(err.response?.data?.message || "Failed to return book");
@@ -89,14 +100,15 @@ export default function AdminBorrowedBooksPage() {
   };
 
   const isOverdue = (dueDate: string, status: string) => {
-    return status === "borrowed" && new Date(dueDate) < new Date();
+    return status === "active" && new Date(dueDate) < new Date();
   };
 
   const getStatusBadge = (status: string) => {
     const styles = {
-      borrowed: "bg-blue-100 text-blue-800",
+      active: "bg-blue-100 text-blue-800",
       returned: "bg-green-100 text-green-800",
       overdue: "bg-red-100 text-red-800",
+      lost: "bg-gray-100 text-gray-800",
     };
     return styles[status as keyof typeof styles] || "bg-gray-100 text-gray-800";
   };
@@ -142,7 +154,7 @@ export default function AdminBorrowedBooksPage() {
         {/* Filter Tabs */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
           <div className="flex border-b border-gray-200">
-            {["all", "borrowed", "overdue", "returned"].map((tab) => (
+            {["all", "active", "overdue", "returned", "lost"].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setFilter(tab as typeof filter)}
@@ -213,20 +225,18 @@ export default function AdminBorrowedBooksPage() {
                         <td className="px-6 py-4">
                           <div>
                             <p className="text-sm font-medium text-gray-900">
-                              {borrow.bookId.title}
+                              {borrow.book.title}
                             </p>
-                            <p className="text-sm text-gray-500">{borrow.bookId.author}</p>
-                            <p className="text-xs text-gray-400">ISBN: {borrow.bookId.isbn}</p>
+                            <p className="text-sm text-gray-500">{borrow.book.author}</p>
+                            <p className="text-xs text-gray-400">ISBN: {borrow.book.isbn}</p>
                           </div>
                         </td>
                         <td className="px-6 py-4">
                           <div>
                             <p className="text-sm font-medium text-gray-900">
-                              {borrow.userId.firstName && borrow.userId.lastName
-                                ? `${borrow.userId.firstName} ${borrow.userId.lastName}`
-                                : borrow.userId.username}
+                              {borrow.user.username}
                             </p>
-                            <p className="text-xs text-gray-500">{borrow.userId.email}</p>
+                            <p className="text-xs text-gray-500">{borrow.user.email}</p>
                           </div>
                         </td>
                         <td className="px-6 py-4 text-sm text-gray-900">
@@ -243,7 +253,7 @@ export default function AdminBorrowedBooksPage() {
                           </div>
                         </td>
                         <td className="px-6 py-4 text-sm text-gray-500">
-                          {borrow.returnDate ? formatDate(borrow.returnDate) : "-"}
+                          {borrow.returnedDate ? formatDate(borrow.returnedDate) : "-"}
                         </td>
                         <td className="px-6 py-4">
                           <span
@@ -255,7 +265,7 @@ export default function AdminBorrowedBooksPage() {
                           </span>
                         </td>
                         <td className="px-6 py-4 text-right text-sm font-medium">
-                          {borrow.status === "borrowed" || borrow.status === "overdue" ? (
+                          {borrow.status === "active" || borrow.status === "overdue" ? (
                             <button
                               onClick={() => handleReturn(borrow._id)}
                               className="text-green-600 hover:text-green-900"

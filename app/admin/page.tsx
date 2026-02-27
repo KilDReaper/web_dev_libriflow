@@ -18,13 +18,22 @@ export default function AdminDashboard() {
   const fetchStats = async () => {
     try {
       const [inventoryRes, borrowingRes] = await Promise.all([
-        api.get("/books/inventory-stats"),
-        api.get("/borrowed-books/stats"),
+        api.get("/admin/books/inventory-stats"),
+        api.get("/borrowings/stats"),
       ]);
 
+      const inventoryData = inventoryRes.data?.data || inventoryRes.data;
+      const borrowingData = borrowingRes.data?.data || borrowingRes.data;
+      
+      // Transform borrowing stats from backend format
+      const borrowingStats = {
+        activeBorrows: borrowingData?.byStatus?.active?.count || 0,
+        overdueBooks: borrowingData?.byStatus?.overdue?.count || 0,
+      };
+
       setStats({
-        inventory: inventoryRes.data?.data || inventoryRes.data,
-        borrowing: borrowingRes.data?.data || borrowingRes.data,
+        inventory: inventoryData,
+        borrowing: borrowingStats,
       });
     } catch (err) {
       console.error("Failed to fetch stats:", err);

@@ -47,6 +47,13 @@ export default function Dashboard() {
           icon="🔍"
           color="bg-amber-500"
         />
+        <Card
+          title="AI Recommendations"
+          description="Get smart book picks for your class or interests."
+          link="/recommendations"
+          icon="✨"
+          color="bg-indigo-600"
+        />
         <Card 
           title="Profile" 
           description="Manage your account settings and bio."
