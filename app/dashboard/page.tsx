@@ -2,18 +2,42 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import api from "@/lib/api";
 
 export default function AdminDashboard() {
+  const router = useRouter();
   const [stats, setStats] = useState({
     inventory: { totalBooks: 0, availableCopies: 0, borrowedCopies: 0 },
     borrowing: { activeBorrows: 0, overdueBooks: 0 },
   });
   const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [checkingAuth, setCheckingAuth] = useState(true);
 
   useEffect(() => {
-    fetchStats();
-  }, []);
+    const checkAdminAccess = async () => {
+      try {
+        const res = await api.get("/auth/profile");
+        const user = res.data.data;
+
+        if (user.role !== "admin") {
+          router.push("/");
+          return;
+        }
+
+        setIsAdmin(true);
+        fetchStats();
+      } catch (err) {
+        console.error("Auth check failed:", err);
+        router.push("/login");
+      } finally {
+        setCheckingAuth(false);
+      }
+    };
+
+    checkAdminAccess();
+  }, [router]);
 
   const fetchStats = async () => {
     // Temporarily showing default stats until backend endpoints are ready
@@ -46,16 +70,25 @@ export default function AdminDashboard() {
     } catch (err) {
       console.error("Failed to fetch stats:", err);
     } finally {
-      setLoading(false);
+      setStatsLoading(false);
     }
     */
   };
-    } catch (err) {
-      console.error("Failed to fetch stats:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+
+  if (checkingAuth) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <div className="flex flex-col items-center gap-2">
+          <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-slate-500 font-medium">Verifying access...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAdmin) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-10">
@@ -206,7 +239,7 @@ export default function AdminDashboard() {
           </Link>
 
           <Link
-            href="/library"
+            href="/"
             className="bg-white p-8 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow"
           >
             <div className="flex items-center justify-between mb-4">

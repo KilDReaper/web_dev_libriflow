@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import api from "@/lib/api";
 
-export default function AdminDashboard() {
+export default function AdminDashboardContent() {
   const [stats, setStats] = useState({
     inventory: { totalBooks: 0, availableCopies: 0, borrowedCopies: 0 },
     borrowing: { activeBorrows: 0, overdueBooks: 0 },
@@ -23,38 +23,47 @@ export default function AdminDashboard() {
     });
     setLoading(false);
     
-    /* TODO: Uncomment when backend is ready
+    // TODO: Uncomment when backend endpoints are ready
+    /*
     try {
-      const [inventoryRes, borrowingRes] = await Promise.all([
-        api.get("/admin/books/inventory-stats"),
-        api.get("/borrowings/stats"),
-      ]);
+      // Fetch inventory stats
+      let inventoryData = { totalBooks: 0, availableCopies: 0, borrowedCopies: 0 };
+      try {
+        const inventoryRes = await api.get("/admin/books/inventory-stats");
+        inventoryData = inventoryRes.data?.data || inventoryRes.data;
+      } catch (err: any) {
+        // Silently fail if endpoint doesn't exist yet
+        if (err?.response?.status !== 400 && err?.response?.status !== 404) {
+          console.warn("Inventory stats unavailable");
+        }
+      }
 
-      const inventoryData = inventoryRes.data?.data || inventoryRes.data;
-      const borrowingData = borrowingRes.data?.data || borrowingRes.data;
-      
-      // Transform borrowing stats from backend format
-      const borrowingStats = {
-        activeBorrows: borrowingData?.byStatus?.active?.count || 0,
-        overdueBooks: borrowingData?.byStatus?.overdue?.count || 0,
-      };
+      // Fetch borrowing stats
+      let borrowingStats = { activeBorrows: 0, overdueBooks: 0 };
+      try {
+        const borrowingRes = await api.get("/borrowings/stats");
+        const borrowingData = borrowingRes.data?.data || borrowingRes.data;
+        borrowingStats = {
+          activeBorrows: borrowingData?.byStatus?.active?.count || 0,
+          overdueBooks: borrowingData?.byStatus?.overdue?.count || 0,
+        };
+      } catch (err: any) {
+        // Silently fail if endpoint doesn't exist yet
+        if (err?.response?.status !== 400 && err?.response?.status !== 404) {
+          console.warn("Borrowing stats unavailable");
+        }
+      }
 
       setStats({
         inventory: inventoryData,
         borrowing: borrowingStats,
       });
     } catch (err) {
-      console.error("Failed to fetch stats:", err);
+      console.warn("Stats service unavailable");
     } finally {
       setLoading(false);
     }
     */
-  };
-    } catch (err) {
-      console.error("Failed to fetch stats:", err);
-    } finally {
-      setLoading(false);
-    }
   };
 
   return (
@@ -206,7 +215,7 @@ export default function AdminDashboard() {
           </Link>
 
           <Link
-            href="/library"
+            href="/"
             className="bg-white p-8 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow"
           >
             <div className="flex items-center justify-between mb-4">
@@ -226,9 +235,9 @@ export default function AdminDashboard() {
                 </svg>
               </div>
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Public Library</h3>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">Go to Library</h3>
             <p className="text-gray-500 text-sm">
-              View the public-facing library page
+              View the library page
             </p>
           </Link>
 

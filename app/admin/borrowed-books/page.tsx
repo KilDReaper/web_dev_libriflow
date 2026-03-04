@@ -49,18 +49,33 @@ export default function AdminBorrowedBooksPage() {
     try {
       setLoading(true);
       const statusFilter = filter === "all" ? "" : `?status=${filter}`;
+      
+      // Only fetch borrows, skip stats for now
+      const borrowsRes = await api.get(`/borrowings${statusFilter}`);
+      
+      /* TODO: Uncomment when backend stats endpoint is ready
       const [borrowsRes, statsRes] = await Promise.all([
         api.get(`/borrowings${statusFilter}`),
         api.get("/borrowings/stats"),
       ]);
+      */
 
       const borrowsData = borrowsRes.data?.data || borrowsRes.data;
-      const statsData = statsRes.data?.data || statsRes.data;
+      // const statsData = statsRes.data?.data || statsRes.data;
 
       if (Array.isArray(borrowsData)) {
         setBorrowedBooks(borrowsData);
       }
       
+      // Set default stats until backend is ready
+      setStats({
+        totalBorrows: 0,
+        activeBorrows: 0,
+        overdueBooks: 0,
+        returnedBooks: 0,
+      });
+      
+      /* TODO: Uncomment when backend stats endpoint is ready
       // Transform backend stats format to match frontend expectations
       if (statsData) {
         const transformedStats: BorrowingStats = {
@@ -73,6 +88,7 @@ export default function AdminBorrowedBooksPage() {
         };
         setStats(transformedStats);
       }
+      */
     } catch (err: any) {
       setErrorInfo(err.response?.data?.message || "Failed to fetch borrowed books");
     } finally {
