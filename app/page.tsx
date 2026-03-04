@@ -1,53 +1,52 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import api from "@/lib/api";
-import Link from "next/link";
+import { useState } from 'react';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
 
-export default function Dashboard() {
-  const [user, setUser] = useState<any>(null);
+export default function LoginPage() {
+  const router = useRouter();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    api.get("/auth/profile").then(res => setUser(res.data.data));
-  }, []);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
 
-  if (!user) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="flex flex-col items-center gap-2">
-          <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-slate-500 font-medium">Preparing your workspace...</p>
-        </div>
-      </div>
-    );
-  }
+    try {
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/login`,
+        { email, password }
+      );
+
+      localStorage.setItem('token', res.data.token);
+      router.push('/user/profile');
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className="max-w-6xl mx-auto p-6 md:p-12">
-      <header className="mb-10">
-        <h2 className="text-sm font-bold text-indigo-600 uppercase tracking-widest mb-1">Overview</h2>
-        <h1 className="text-4xl font-black text-slate-900">
-          Welcome back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">{user.username}</span> 👋
-        </h1>
-        <p className="text-slate-500 mt-2 text-lg">What would you like to do today?</p>
-      </header>
+    <div className="min-h-screen bg-[#f8fafc] flex flex-col justify-center py-12 px-6">
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <Card 
-          title="Library" 
-          description="Access your saved books and resources."
-          link="/library" 
-          icon="📚"
-          color="bg-blue-500"
-        />
-        <Card 
-          title="Search" 
-          description="Find specific topics or documentation."
-          link="/search" 
-          icon="🔍"
-          color="bg-amber-500"
-        />
-        <Card
+      <div className="max-w-md w-full mx-auto">
+        <div className="bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
+          <div className="p-8 md:p-10">
+            <div className="text-center mb-10">
+              {/* Changed dimensions of the icon container */}
+              <div className="w-16 h-16 bg-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-indigo-200">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 00-2 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+              <h1 className="text-3xl font-black text-slate-900 tracking-tight">Welcome Back</h1>
+              <p className="text-slate-500 mt-2">Sign in to access your library</p>
+            </div>
           title="AI Recommendations"
           description="Get smart book picks for your class or interests."
           link="/recommendations"
