@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import api from "@/lib/api";
+import BackButton from "@/app/_components/BackButton";
 
 export default function ProfilePage() {
   const [user, setUser] = useState<any>(null);
@@ -112,6 +113,7 @@ export default function ProfilePage() {
 
   return (
     <div className="max-w-4xl mx-auto my-12 px-4">
+      <BackButton className="mb-4" />
       <div className="bg-white rounded-3xl shadow-xl shadow-slate-200/60 overflow-hidden border border-slate-100">
         <div className="h-32 bg-gradient-to-r from-indigo-500 to-purple-600"></div>
 

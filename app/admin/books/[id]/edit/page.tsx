@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import api from "@/lib/api";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
+import BackButton from "@/app/_components/BackButton";
 
 export default function EditBookPage() {
   const router = useRouter();

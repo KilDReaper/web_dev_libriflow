@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import api from "@/lib/api";
 import Link from "next/link";
+import BackButton from "@/app/_components/BackButton";
 
 export default function AdminUsersPage() {
   const [users, setUsers] = useState<any[]>([]);
@@ -29,6 +30,7 @@ export default function AdminUsersPage() {
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-10">
       <div className="max-w-6xl mx-auto">
+        <BackButton className="mb-4" />
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">User Management</h1>

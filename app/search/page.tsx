@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import BackButton from "@/app/_components/BackButton";
 
 export default function SearchPage() {
   const [query, setQuery] = useState("");
@@ -8,6 +9,7 @@ export default function SearchPage() {
   return (
     <div className="min-h-[40vh] bg-slate-50 flex items-center justify-center p-6">
       <div className="w-full max-w-2xl">
+        <BackButton className="mb-6" />
         <div className="text-center mb-8">
           <h2 className="text-4xl font-black text-slate-900 tracking-tight mb-2">
             Search Library

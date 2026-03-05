@@ -2,6 +2,7 @@
 
 import axios from 'axios';
 import { useState } from 'react';
+import BackButton from "@/app/_components/BackButton";
 
 export default function CreateUserPage() {
   const [username, setUsername] = useState('');
@@ -56,6 +57,7 @@ export default function CreateUserPage() {
 
   return (
     <div className="min-h-screen bg-[#f8fafc] py-12 px-4">
+      <BackButton className="absolute top-4 left-4" />
       <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
         <div className="bg-indigo-600 p-8 text-center text-white">
           <h1 className="text-3xl font-bold">Create New Member</h1>

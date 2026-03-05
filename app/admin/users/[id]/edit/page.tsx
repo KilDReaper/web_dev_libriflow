@@ -3,6 +3,7 @@
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import api from "@/lib/api";
+import BackButton from "@/app/_components/BackButton";
 
 export default function EditUserPage() {
   const { id } = useParams();

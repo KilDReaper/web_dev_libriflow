@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import api from "@/lib/api";
+import BackButton from "@/app/_components/BackButton";
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
@@ -60,6 +61,7 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-10">
       <div className="max-w-7xl mx-auto">
+        <BackButton className="mb-4" />
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
           <p className="text-gray-500 text-sm">Manage your library system</p>

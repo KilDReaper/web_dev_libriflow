@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import api from "@/lib/api";
+import BackButton from "@/app/_components/BackButton";
 
 interface RecommendedBook {
   _id?: string;
@@ -247,6 +248,7 @@ export default function RecommendationsPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 px-6 py-10">
+      <BackButton className="mb-4 ml-4" />
       {/* Book Viewer Modal */}
       {viewingBook && (
         <BookViewerModal book={viewingBook} onClose={handleClosePreview} />

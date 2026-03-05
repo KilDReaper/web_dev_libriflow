@@ -4,6 +4,7 @@ import { useState } from "react";
 import api from "@/lib/api";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import BackButton from "@/app/_components/BackButton";
 
 export default function CreateBookPage() {
   const router = useRouter();
@@ -48,6 +49,7 @@ export default function CreateBookPage() {
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-10">
       <div className="max-w-3xl mx-auto">
+        <BackButton className="mb-4" />
         <div className="mb-8">
           <Link
             href="/admin/books"

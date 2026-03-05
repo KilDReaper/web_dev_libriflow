@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import api from "@/lib/api";
+import BackButton from "@/app/_components/BackButton";
 
 interface BookCard {
   _id?: string;
@@ -394,6 +395,7 @@ export default function LibraryPage() {
       {viewingBook && <BookViewerModal book={viewingBook} onClose={handleClosePreview} />}
 
       <div className="max-w-6xl mx-auto">
+        <BackButton className="mb-4" />
         <div className="flex items-center justify-between mb-10">
           <div>
             <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Digital Library</h1>
