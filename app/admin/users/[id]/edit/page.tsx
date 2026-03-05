@@ -19,17 +19,24 @@ export default function EditUserPage() {
     role: "user",
   });
 
+  const normalizeUser = (payload: any) => {
+    if (!payload) return null;
+    return payload.user || payload.profile || payload.account || payload;
+  };
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
         setLoading(true);
         const response = await api.get(`/admin/users/${id}`);
-        const user = response.data?.data || response.data;
+        const rawUser = response.data?.data ?? response.data;
+        const user = normalizeUser(rawUser);
         setFormData({
-          username: user.username || "",
-          email: user.email || "",
-          phoneNumber: user.phoneNumber || "",
-          role: user.role || "user",
+          username: user?.username || user?.name || user?.fullName || user?.userName || "",
+          email: user?.email || user?.emailAddress || user?.contact?.email || "",
+          phoneNumber:
+            user?.phoneNumber || user?.phone || user?.mobile || user?.contactNumber || user?.contact?.phone || "",
+          role: (user?.role || user?.userRole || "user").toString().toLowerCase(),
         });
         setError("");
       } catch (err: any) {

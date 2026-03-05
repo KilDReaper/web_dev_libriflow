@@ -12,14 +12,19 @@ export default function UserDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const normalizeUser = (payload: any) => {
+    if (!payload) return null;
+    return payload.user || payload.profile || payload.account || payload;
+  };
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
         setLoading(true);
         setError("");
         const res = await api.get(`/admin/users/${id}`);
-        const userData = res.data?.data || res.data;
-        setUser(userData);
+        const userData = res.data?.data ?? res.data;
+        setUser(normalizeUser(userData));
       } catch (err: any) {
         console.error("Failed to fetch user:", err);
         setError(err.response?.data?.message || "Failed to load user details. Please try again.");
@@ -66,6 +71,32 @@ export default function UserDetailPage() {
     );
   }
 
+  const userName =
+    user.username ||
+    user.name ||
+    user.fullName ||
+    user.userName ||
+    user.displayName ||
+    "N/A";
+
+  const userEmail =
+    user.email ||
+    user.emailAddress ||
+    user.contact?.email ||
+    "N/A";
+
+  const userPhone =
+    user.phoneNumber ||
+    user.phone ||
+    user.mobile ||
+    user.contactNumber ||
+    user.contact?.phone ||
+    "Not provided";
+
+  const userRole = (user.role || user.userRole || "user").toString().toLowerCase();
+  const createdAt = user.createdAt || user.joinedAt || user.created_on;
+  const lastLogin = user.lastLogin || user.lastLoginAt || user.updatedAt;
+
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-4xl mx-auto">
@@ -78,12 +109,12 @@ export default function UserDetailPage() {
           </div>
           <span
             className={`px-4 py-2 rounded-full text-sm font-semibold ${
-              user.role === "admin"
+              userRole === "admin"
                 ? "bg-purple-100 text-purple-700"
                 : "bg-blue-100 text-blue-700"
             }`}
           >
-            {user.role?.toUpperCase() || "USER"}
+            {userRole.toUpperCase()}
           </span>
         </div>
 
@@ -99,15 +130,15 @@ export default function UserDetailPage() {
             <div className="space-y-4">
               <div>
                 <p className="text-xs text-gray-500 uppercase font-semibold">Username</p>
-                <p className="text-lg font-medium text-gray-900">{user.username || "N/A"}</p>
+                <p className="text-lg font-medium text-gray-900">{userName}</p>
               </div>
               <div>
                 <p className="text-xs text-gray-500 uppercase font-semibold">Email Address</p>
-                <p className="text-lg font-medium text-gray-900 break-all">{user.email || "N/A"}</p>
+                <p className="text-lg font-medium text-gray-900 break-all">{userEmail}</p>
               </div>
               <div>
                 <p className="text-xs text-gray-500 uppercase font-semibold">Phone Number</p>
-                <p className="text-lg font-medium text-gray-900">{user.phoneNumber || "Not provided"}</p>
+                <p className="text-lg font-medium text-gray-900">{userPhone}</p>
               </div>
             </div>
           </div>
@@ -124,8 +155,8 @@ export default function UserDetailPage() {
               <div>
                 <p className="text-xs text-gray-500 uppercase font-semibold">Joined On</p>
                 <p className="text-lg font-medium text-gray-900">
-                  {user.createdAt
-                    ? new Date(user.createdAt).toLocaleDateString("en-US", {
+                  {createdAt
+                    ? new Date(createdAt).toLocaleDateString("en-US", {
                         year: "numeric",
                         month: "long",
                         day: "numeric",
@@ -136,8 +167,8 @@ export default function UserDetailPage() {
               <div>
                 <p className="text-xs text-gray-500 uppercase font-semibold">Last Login</p>
                 <p className="text-lg font-medium text-gray-900">
-                  {user.lastLogin
-                    ? new Date(user.lastLogin).toLocaleDateString("en-US", {
+                  {lastLogin
+                    ? new Date(lastLogin).toLocaleDateString("en-US", {
                         year: "numeric",
                         month: "long",
                         day: "numeric",
@@ -169,13 +200,13 @@ export default function UserDetailPage() {
             <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
               <span
                 className={`h-3 w-3 rounded-full ${
-                  user.role === "admin" ? "bg-purple-500" : "bg-blue-500"
+                  userRole === "admin" ? "bg-purple-500" : "bg-blue-500"
                 }`}
               ></span>
               <div>
                 <p className="text-xs text-gray-500 uppercase">Role</p>
                 <p className="text-sm font-semibold text-gray-900">
-                  {user.role === "admin" ? "Administrator" : "Regular User"}
+                  {userRole === "admin" ? "Administrator" : "Regular User"}
                 </p>
               </div>
             </div>
