@@ -51,12 +51,6 @@ export default function AdminDashboard() {
     }
     */
   };
-    } catch (err) {
-      console.error("Failed to fetch stats:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-10">

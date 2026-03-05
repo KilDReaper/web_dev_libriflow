@@ -215,7 +215,7 @@ export default function AdminDashboardContent() {
           </Link>
 
           <Link
-            href="/"
+            href="/library"
             className="bg-white p-8 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow"
           >
             <div className="flex items-center justify-between mb-4">

@@ -112,7 +112,7 @@ export default function AdminUsersPage() {
                       </td>
                       <td className="px-6 py-4 text-right text-sm font-medium">
                         <Link 
-                          href={`/admin/users/edit/${user._id}`}
+                          href={`/admin/users/${user._id}/edit`}
                           className="text-indigo-600 hover:text-indigo-900 mr-4"
                         >
                           Edit
