@@ -16,54 +16,11 @@ export default function AdminDashboardContent() {
   }, []);
 
   const fetchStats = async () => {
-    // Temporarily showing default stats until backend endpoints are ready
     setStats({
       inventory: { totalBooks: 0, availableCopies: 0, borrowedCopies: 0 },
       borrowing: { activeBorrows: 0, overdueBooks: 0 },
     });
     setLoading(false);
-    
-    // TODO: Uncomment when backend endpoints are ready
-    /*
-    try {
-      // Fetch inventory stats
-      let inventoryData = { totalBooks: 0, availableCopies: 0, borrowedCopies: 0 };
-      try {
-        const inventoryRes = await api.get("/admin/books/inventory-stats");
-        inventoryData = inventoryRes.data?.data || inventoryRes.data;
-      } catch (err: any) {
-        // Silently fail if endpoint doesn't exist yet
-        if (err?.response?.status !== 400 && err?.response?.status !== 404) {
-          console.warn("Inventory stats unavailable");
-        }
-      }
-
-      // Fetch borrowing stats
-      let borrowingStats = { activeBorrows: 0, overdueBooks: 0 };
-      try {
-        const borrowingRes = await api.get("/borrowings/stats");
-        const borrowingData = borrowingRes.data?.data || borrowingRes.data;
-        borrowingStats = {
-          activeBorrows: borrowingData?.byStatus?.active?.count || 0,
-          overdueBooks: borrowingData?.byStatus?.overdue?.count || 0,
-        };
-      } catch (err: any) {
-        // Silently fail if endpoint doesn't exist yet
-        if (err?.response?.status !== 400 && err?.response?.status !== 404) {
-          console.warn("Borrowing stats unavailable");
-        }
-      }
-
-      setStats({
-        inventory: inventoryData,
-        borrowing: borrowingStats,
-      });
-    } catch (err) {
-      console.warn("Stats service unavailable");
-    } finally {
-      setLoading(false);
-    }
-    */
   };
 
   return (
@@ -74,7 +31,6 @@ export default function AdminDashboardContent() {
           <p className="text-gray-500 text-sm">Manage your library system</p>
         </div>
 
-        {/* Quick Stats */}
         {!loading && (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
@@ -103,8 +59,6 @@ export default function AdminDashboardContent() {
             </div>
           </div>
         )}
-
-        {/* Admin Actions */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <Link
             href="/admin/books"

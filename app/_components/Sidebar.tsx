@@ -23,7 +23,6 @@ export default function Sidebar({ user }: { user: any }) {
 
   return (
     <>
-      {/* Mobile Menu Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="fixed top-4 left-4 z-40 lg:hidden p-2 rounded-lg bg-indigo-600 text-white"
@@ -33,17 +32,15 @@ export default function Sidebar({ user }: { user: any }) {
         </svg>
       </button>
 
-      {/* Sidebar */}
       <aside className={`${
         isOpen ? "translate-x-0" : "-translate-x-full"
       } lg:translate-x-0 fixed lg:static inset-y-0 left-0 z-30 w-64 bg-slate-900 text-white transition-transform duration-300 flex flex-col`}>
-        {/* Header */}
+
         <div className="p-6 border-b border-slate-700">
           <h2 className="text-2xl font-bold text-indigo-400">LibriFlow</h2>
           <p className="text-sm text-slate-400 mt-1">{user?.username || "Guest"}</p>
         </div>
 
-        {/* Navigation */}
         <nav className="flex-1 p-6 space-y-3">
           {menuItems.map((item) => (
             <Link
@@ -58,7 +55,6 @@ export default function Sidebar({ user }: { user: any }) {
           ))}
         </nav>
 
-        {/* Footer */}
         <div className="p-6 border-t border-slate-700 space-y-3">
           <button
             onClick={handleLogout}
@@ -70,7 +66,6 @@ export default function Sidebar({ user }: { user: any }) {
         </div>
       </aside>
 
-      {/* Overlay for mobile */}
       {isOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-20 lg:hidden"
