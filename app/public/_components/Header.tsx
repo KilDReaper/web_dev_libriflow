@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import Logo from "@/app/assets/images/Logo.png";
 import ThemeToggle from "./ThemeToogle";
 
 const NAV_LINKS = [
@@ -22,8 +24,13 @@ export default function Header() {
                 <div className="flex h-16 items-center justify-between md:grid md:grid-cols-[1fr_auto_1fr] w-full">
                     <div className="flex items-center gap-2">
                         <Link href="/" className="flex items-center gap-2 group">
-                            <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-blue-700 text-white font-bold text-lg shadow-md group-hover:shadow-lg transition-all">
-                                📚
+                            <div className="relative h-10 w-10 flex-shrink-0 rounded-lg overflow-hidden shadow-md group-hover:shadow-lg transition-all">
+                                <Image
+                                    src={Logo}
+                                    alt="LibriFlow Logo"
+                                    fill
+                                    className="object-contain"
+                                />
                             </div>
                             <span className="text-lg font-bold tracking-tight bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent group-hover:opacity-80 transition-opacity">
                                 LibriFlow
