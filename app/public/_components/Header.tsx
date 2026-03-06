@@ -22,11 +22,11 @@ export default function Header() {
                 <div className="flex h-16 items-center justify-between md:grid md:grid-cols-[1fr_auto_1fr] w-full">
                     <div className="flex items-center gap-2">
                         <Link href="/" className="flex items-center gap-2 group">
-                            <span className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-foreground text-background font-semibold">
-                                M
-                            </span>
-                            <span className="text-base font-semibold tracking-tight group-hover:opacity-80 transition-opacity">
-                                MyApp
+                            <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-blue-700 text-white font-bold text-lg shadow-md group-hover:shadow-lg transition-all">
+                                📚
+                            </div>
+                            <span className="text-lg font-bold tracking-tight bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent group-hover:opacity-80 transition-opacity">
+                                LibriFlow
                             </span>
                         </Link>
                     </div>
